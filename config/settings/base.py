@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'backend_test.users.apps.UsersAppConfig',
     # Your stuff: custom apps go here
+    'backend_test.menu',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
