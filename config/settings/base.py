@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 
 import environ
+from corsheaders.defaults import default_headers
 
 ROOT_DIR = environ.Path(__file__) - 3  # (backend_test/config/settings/base.py - 3 = backend_test/)
 APPS_DIR = ROOT_DIR.path('backend_test')
@@ -33,6 +34,15 @@ USE_I18N = True
 USE_L10N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
+
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = default_headers + (
+    'authpayload',
+)
+
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -68,6 +78,8 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',  # django-cors-headers
 ]
 LOCAL_APPS = [
     'backend_test.users.apps.UsersAppConfig',
@@ -129,6 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -269,5 +282,20 @@ ACCOUNT_ADAPTER = 'backend_test.users.adapters.AccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'backend_test.users.adapters.SocialAccountAdapter'
 
 
-# Your stuff...
+# My stuff...
 # ------------------------------------------------------------------------------
+
+# Django rest_framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
+}
