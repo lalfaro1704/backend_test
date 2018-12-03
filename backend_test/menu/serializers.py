@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 # my models here
-from backend_test.menu.models import (Ingredient, Preparation)
+from .models import (Ingredient, Preparation, Lunch)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -17,4 +17,12 @@ class PreparationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Preparation
+        fields = '__all__'
+
+
+class LunchSerializer(serializers.ModelSerializer):
+    preparations = PreparationSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Lunch
         fields = '__all__'
