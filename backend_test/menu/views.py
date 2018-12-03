@@ -45,7 +45,29 @@ class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = [OrderingFilter, IngredientFilterBackend]
-    ordering_fields = ('name', '-name',)
+    ordering_fields = ('name',)
+
+
+class PreparationFilterBackend(BaseFilterBackend):
+    """
+    Filter for preparation API.
+    """
+    def get_schema_fields(self, view):
+        return [
+            coreapi.Field(
+                name='lunch',
+                location='query',
+                required=False,
+                type='str',
+                description='Filter preparations by lunch.',
+            ),
+        ]
+
+    def filter_queryset(self, request, queryset, view):
+        lunch = request.GET.get('lunch', None)
+        if lunch:
+            return queryset.filter(lunch__id=lunch)
+        return queryset
 
 
 class PreparationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -55,3 +77,5 @@ class PreparationViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     queryset = Preparation.objects.all()
     serializer_class = PreparationSerializer
+    filter_backends = [OrderingFilter, PreparationFilterBackend]
+    ordering_fields = ('name',)
