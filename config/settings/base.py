@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 
 import environ
+from corsheaders.defaults import default_headers
 
 ROOT_DIR = environ.Path(__file__) - 3  # (backend_test/config/settings/base.py - 3 = backend_test/)
 APPS_DIR = ROOT_DIR.path('backend_test')
@@ -33,6 +34,15 @@ USE_I18N = True
 USE_L10N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
+
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = default_headers + (
+    'authpayload',
+)
+
 
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -131,6 +141,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
