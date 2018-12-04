@@ -1,4 +1,4 @@
-# standard libreary
+# standard library
 import coreapi
 from datetime import datetime
 
@@ -8,10 +8,10 @@ from rest_framework import mixins
 from rest_framework.filters import BaseFilterBackend, OrderingFilter
 
 # my models here
-from .models import (Ingredient, Preparation, Lunch)
+from .models import (Ingredient, Preparation, Lunch, Menu)
 
 # my serializers here
-from .serializers import (IngredientSerializer, PreparationSerializer, LunchSerializer)
+from .serializers import (IngredientSerializer, PreparationSerializer, LunchSerializer, MenuSerializer)
 
 # Create your views here.
 
@@ -114,3 +114,36 @@ class LunchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = LunchSerializer
     filter_backends = [OrderingFilter, LunchFilterBackend]
     ordering_fields = ('name',)
+
+
+class MenuFilterBackend(BaseFilterBackend):
+    """
+    Filter for menu API.
+    """
+    def get_schema_fields(self, view):
+        return [
+            coreapi.Field(
+                name='date',
+                location='query',
+                required=False,
+                type='str',
+                description='Filter menu by date. Format example: `01-01-2018`.',
+            ),
+        ]
+
+    def filter_queryset(self, request, queryset, view):
+        date = request.GET.get('date', None)
+        if date:
+            date = datetime.strptime(date, '%d-%m-%Y')
+            return queryset.filter(date__date=date)
+        return queryset.filter(is_active=True)
+
+
+class MenuViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    list:
+    Daily menu!.
+    """
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+    filter_backends = [MenuFilterBackend]
