@@ -5,6 +5,8 @@ Base settings to build other settings files upon.
 import environ
 from corsheaders.defaults import default_headers
 
+from celery.schedules import crontab
+
 ROOT_DIR = environ.Path(__file__) - 3  # (backend_test/config/settings/base.py - 3 = backend_test/)
 APPS_DIR = ROOT_DIR.path('backend_test')
 
@@ -80,6 +82,7 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',  # django-cors-headers
+    'django_slack',  # django-slack notifications on slack
 ]
 LOCAL_APPS = [
     'backend_test.users.apps.UsersAppConfig',
@@ -298,4 +301,15 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10
+}
+
+# SLACK
+SLACK_TOKEN = env('SLACK_TOKEN')
+
+# CELERY
+CELERY_BEAT_SCHEDULE = {
+    'daily_menu': {
+        'task': 'backend_test.menu.tasks.daily_menu',
+        'schedule': crontab(hour="7"),
+    },
 }
