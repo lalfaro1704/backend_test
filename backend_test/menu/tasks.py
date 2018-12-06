@@ -45,7 +45,7 @@ def daily_menu():
                 slack.api_call(
                     "reminders.add",
                     text=notification,
-                    user='U8M8BHHED',
+                    user=user['id'],
                     time=current_day.time()
                 )
 
