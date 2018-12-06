@@ -9,7 +9,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        exclude = ('is_active',)
 
 
 class PreparationSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class PreparationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Preparation
-        fields = '__all__'
+        exclude = ('is_active',)
 
 
 class LunchSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class LunchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lunch
-        fields = '__all__'
+        exclude = ('is_active',)
 
 
 class MenuSerializer(serializers.ModelSerializer):

@@ -20,3 +20,6 @@ coreapi==2.3.3  # https://github.com/core-api/python-client
 
 # CORS
 django-cors-headers==2.4.0
+
+# API slack
+slackclient
