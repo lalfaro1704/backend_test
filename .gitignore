@@ -339,4 +339,5 @@ backend_test/media/
 
 .pytest_cache/
 
-
+# Pycharm
+.idea/

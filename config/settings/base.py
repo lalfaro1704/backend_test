@@ -82,7 +82,6 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',  # django-cors-headers
-    'django_slack',  # django-slack notifications on slack
 ]
 LOCAL_APPS = [
     'backend_test.users.apps.UsersAppConfig',
@@ -306,10 +305,10 @@ REST_FRAMEWORK = {
 # SLACK
 SLACK_TOKEN = env('SLACK_TOKEN')
 
-# CELERY
+# CELERY celery -A backend_test.taskapp worker -l info -B
 CELERY_BEAT_SCHEDULE = {
     'daily_menu': {
         'task': 'backend_test.menu.tasks.daily_menu',
-        'schedule': crontab(hour="7"),
+        'schedule': crontab(hour=7, minute=30, day_of_week='1-5'),
     },
 }
