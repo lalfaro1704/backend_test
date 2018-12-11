@@ -65,7 +65,7 @@ class GetAllPreparations(TestCase):
         p1.recipe.add(i1, i2)
         p2.recipe.add(i3, i4)
 
-    def test_get_all_ingredients(self):
+    def test_get_all_preparations(self):
         response = client.get('/menu/api/preparation/')  # get API response
 
         preparations = Preparation.objects.all()  # get data from db
@@ -95,7 +95,7 @@ class GetAllMenus(TestCase):
         menu = Menu.objects.create(name="Menu 1", date=datetime.now())
         menu.lunches.add(l1, l2)
 
-    def test_get_all_ingredients(self):
+    def test_get_all_menus(self):
         response = client.get('/menu/api/menu/')  # get API response
 
         menus = Menu.objects.all()  # get data from db

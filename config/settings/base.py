@@ -288,7 +288,7 @@ SOCIALACCOUNT_ADAPTER = 'backend_test.users.adapters.SocialAccountAdapter'
 # ------------------------------------------------------------------------------
 
 # Django rest_framework
-"""
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -309,7 +309,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [],
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
-
+"""
 # SLACK
 SLACK_TOKEN = env('SLACK_TOKEN')
 
