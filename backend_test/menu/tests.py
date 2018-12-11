@@ -1,5 +1,5 @@
 # standard library
-import json
+from datetime import datetime
 
 # Django
 from django.test import TestCase, Client
@@ -8,8 +8,8 @@ from django.test import TestCase, Client
 from rest_framework import status
 
 # my stuff here
-from .models import (Ingredient)
-from .serializers import (IngredientSerializer)
+from .models import (Ingredient, Preparation, Lunch, Menu)
+from .serializers import (IngredientSerializer, PreparationSerializer, MenuSerializer)
 
 # initialize the APIClient app
 client = Client()
@@ -46,6 +46,30 @@ class GetAllIngredients(TestCase):
 
         ingredients = Ingredient.objects.all()  # get data from db
         serializer = IngredientSerializer(ingredients, many=True)
+
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class GetAllPreparations(TestCase):
+    """
+    Test API for Preparation.
+    """
+    def setUp(self):
+        i1 = Ingredient.objects.create(name="Ingredient 1", is_active=True)
+        i2 = Ingredient.objects.create(name="Ingredient 2", is_active=True)
+        i3 = Ingredient.objects.create(name="Ingredient 3", is_active=True)
+        i4 = Ingredient.objects.create(name="Ingredient 4", is_active=True)
+        p1 = Preparation.objects.create(name="Preparation 1", is_active=True)
+        p2 = Preparation.objects.create(name="Preparation 2", is_active=True)
+        p1.recipe.add(i1, i2)
+        p2.recipe.add(i3, i4)
+
+    def test_get_all_ingredients(self):
+        response = client.get('/menu/api/preparation/')  # get API response
+
+        preparations = Preparation.objects.all()  # get data from db
+        serializer = PreparationSerializer(preparations, many=True)
 
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
