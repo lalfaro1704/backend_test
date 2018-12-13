@@ -1,94 +1,115 @@
-Dialy Menu
-==========
+Instalación 🔧
+==============
 
-Behold My Awesome Project!
+* Python 3: ::
 
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
+	* Mac:
+		brew install python
 
+	* Debian:
+		cd /tmp/
+		sudo apt-get install python3-dev libffi-dev libssl-dev zlib1g-dev
+		wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz
+		tar xvf Python-3.6.0.tgz
+		cd Python-3.6.0
+		./configure --enable-optimizations
+		make -j8
+		sudo make altinstall
+		python3.6
 
-:License: MIT
+* Pip: ::
 
+	* Mac:
+		$ brew install pip
+		$ sudo pip install --upgrade pip
 
-Settings
---------
+	* Debian:
+		$ sudo apt-get install python-pip
+		$ sudo pip install --upgrade pip
 
-Moved to settings_.
+* Virtualenv: ::
 
-.. _settings: http://cookiecutter-django.readthedocs.io/en/latest/settings.html
+	* Mac:
+		$ brew install virtualenv
 
-Basic Commands
---------------
+	* Debian:
+		$ sudo apt-get virtualenv
 
-Setting Up Your Users
-^^^^^^^^^^^^^^^^^^^^^
+	* Entorno virtual con la versión de python 3.6:
+		$ virtualenv -p python3.6 .venv
+		$ source .venv/bin/activate
 
-* To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+Variables de entorno y variables globales ⚙️
+============================================
 
-* To create an **superuser account**, use this command::
+* Mac: ::
 
-    $ python manage.py createsuperuser
+	$ export $(grep -v '^#' .env/local | xargs -0)
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+* Debian: ::
 
-Type checks
-^^^^^^^^^^^
+	$ export $(grep -v '^#' .env/local | xargs -d '\n')
 
-Running type checks with mypy:
+Deployment 📦
+=============
 
+* Base de datos ::
+
+	* Mac:
+		$ createdb backend_test
+
+	* Debian:
+		$ sudo su postgres -c "createdb backend_test"
+
+	$ ./manage.py migrate
+
+* dependencias del proyecto: ::
+
+	$ pip install -r requirements/local.txt
+
+* superusuario: ::
+
+	$ ./manage.py createsuperuser
+		Username:
+		Email address:
+		Password:
+		Password (again):
+
+* runserver: ::
+
+	$ ./manage.py runserver
+
+* Para ingresar al administrador: ::
+
+	http://localhost:8000/admin
+
+Tests 🔧
+=========
 ::
 
-  $ mypy backend_test
+	$ coverage run manage.py test -v 2
 
-Test coverage
-^^^^^^^^^^^^^
+Versionado 📌
+=============
 
-To run the tests, check your test coverage, and generate an HTML coverage report::
+* Git: ::
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+	* https://github.com/lalfaro1704/backend_test.git
 
-Running tests with py.test
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Autor ✒️
+========
 
-::
+* **Luis Alfaro** - *Test cornershop* - [lalfaro1704](https://github.com/lalfaro1704)
 
-  $ pytest
+Licencia 📄
+===========
 
-Live reloading and Sass CSS compilation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+:Licencia: MIT
 
-Moved to `Live reloading and SASS compilation`_.
+Agradecimiento 🎁
+=================
 
-.. _`Live reloading and SASS compilation`: http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html
-
-
-
-Celery
-^^^^^^
-
-This app comes with Celery.
-
-To run a celery worker:
-
-.. code-block:: bash
-
-    cd backend_test
-    celery -A backend_test.taskapp worker -l info
-
-Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
-
-
-
-
-
-Deployment
-----------
-
-The following details how to deploy this application.
-
+* Gracias a Cornershop por darme la oportunidad 🍺 🤓
 
 
 
