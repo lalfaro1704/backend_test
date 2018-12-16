@@ -2,16 +2,23 @@
 import coreapi
 from datetime import datetime
 
+# Django
+from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.utils.translation import ugettext_lazy as _
+
 # 3rd-party
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework import mixins
 from rest_framework.filters import BaseFilterBackend, OrderingFilter
+from rest_framework.response import Response
 
 # my models here
-from .models import (Ingredient, Preparation, Lunch, Menu)
+from .models import (Ingredient, Preparation, Lunch, Menu, Order, IngredientException)
 
 # my serializers here
-from .serializers import (IngredientSerializer, PreparationSerializer, LunchSerializer, MenuSerializer)
+from .serializers import (IngredientSerializer, PreparationSerializer, LunchSerializer, MenuSerializer,
+                          OrderSerializer)
 
 # Create your views here.
 
@@ -139,7 +146,7 @@ class MenuFilterBackend(BaseFilterBackend):
         return queryset.filter(is_active=True)
 
 
-class MenuViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class MenuViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     list:
     Daily menu!.
@@ -147,3 +154,50 @@ class MenuViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     filter_backends = [MenuFilterBackend]
+
+
+class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    """
+    create:
+    Store order for menu.
+    """
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def create(self, request):
+        user = request.data.get('user', None)
+        lunch = request.data.get('lunch', None)
+        exclutions = request.data.get('exclutions', [])
+        errors = {}
+
+        try:
+            user = get_user_model().objects.get(username=user)
+        except get_user_model().DoesNotExist:
+            errors['errors'] = _("Invalid user!")
+            return Response(errors, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            with transaction.atomic():
+                order = Order.objects.create(
+                    user=user,
+                    lunch=Lunch.objects.get(id=lunch)
+                )
+
+                for exclution in exclutions:
+                    ingredient_exception = IngredientException.objects.create(
+                        order=order,
+                        preparation=Preparation.objects.get(id=exclution['id_preparation'])
+                    )
+                    for ingredient in exclution['ingredients']:
+                        ingredient = Ingredient.objects.get(id=ingredient)
+                        ingredient_exception.ingredients.add(ingredient)
+                serializer = self.serializer_class(order)
+
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_201_CREATED
+                )
+        except Exception as e:
+            errors['errors'] = e
+
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
